@@ -1,8 +1,15 @@
+
+
 const express = require("express");
-const authController = require("../controllers/authController"); // Adjusted path
+const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post("/signup", authController.signup); // Correct POST route
+// Route for signing up a new user
+router.post("/signup", authController.signup);
+
+// Route for fetching all users
+router.get("/", authController.getAllUsers);
 
 module.exports = router;
+
