@@ -5,19 +5,19 @@ const userSchema = new mongoose.Schema({
   fullname: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
+  regNo: { type: String, unique: true, required: true },
+  balance: { type: Number, default: 0 },
 });
 
-// Pre-save hook to hash the password
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
 userSchema.pre('save', async function (next) {
-  // Hash the password only if it’s new or modified
   if (!this.isModified('password')) return next();
-  
-  // Hash the password with bcrypt
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-// Create and export the User model
 const User = mongoose.model('User', userSchema);
 module.exports = User;
-
