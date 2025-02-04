@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const userRoutes = require("./src/routes/userRoutes");
+const { generatePassword, encryptPassword } = require('./src/utils/passwords');
 
 
 dotenv.config();
