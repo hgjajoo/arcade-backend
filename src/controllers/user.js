@@ -1,24 +1,32 @@
-const user = require('../models/userModel')
+const express = require("express");
+const authController = require("../controllers/authController");
+const paymentController = require("../controllers/paymentController");
 
-async function handleUserSignup(req, res) {
-  const{fullname, email, password} = req.body;
-  await user.create({
-    fullname,
-    email,
-    password,
-  });
-  return res.json;
+const router = express.Router();
+
+// Debugging: Log available functions
+console.log("Loaded paymentController:", Object.keys(paymentController));
+
+// Ensure functions exist before adding routes
+if (paymentController.spendMoney) {
+  router.post("/spend-money", paymentController.spendMoney);
+} else {
+  console.error("⚠️ Error: spendMoney is undefined in paymentController");
 }
 
-async function handleUserLogin(req, res) {
-  const{email, password} = req.body;
-  const user = await user.findOne({ email, password});
-  if (!user) return res.status(404).json({ message: 'User not found' });
-  return res.json;
+if (paymentController.getPaymentHistory) {
+  router.get("/payment-history/:regNo", paymentController.getPaymentHistory);
+} else {
+  console.error("⚠️ Error: getPaymentHistory is undefined in paymentController");
 }
 
+if (paymentController.addMoney) {
+  router.post("/add-money", paymentController.addMoney);
+} else {
+  console.error("⚠️ Error: addMoney is undefined in paymentController");
+}
 
-module.exports = {
-  handleUserSignup,
-  handleUserLogin
-};
+// Login route
+router.post("/login", authController.login);
+
+module.exports = router;
