@@ -14,10 +14,17 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 userSchema.pre('save', async function (next) {
+  // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
+  
+  try {
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
+
