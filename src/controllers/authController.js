@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const { generateToken } = require("../utils/jwt");
+const { generateToken } = require("../middleware.js/jwt");
 const bcrypt = require("bcryptjs");
 const {verifyHashedData} = require("../utils/hashData");
 
