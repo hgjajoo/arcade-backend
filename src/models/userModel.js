@@ -9,21 +9,21 @@ const userSchema = new mongoose.Schema({
   balance: { type: Number, default: 0 },
 });
 
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
+// userSchema.methods.comparePassword = async function (candidatePassword) {
+//   return await bcrypt.compare(candidatePassword, this.password);
+// };
 
-userSchema.pre('save', async function (next) {
-  // Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password')) return next();
+// userSchema.pre('save', async function (next) {
+//   // Only hash the password if it has been modified (or is new)
+//   if (!this.isModified('password')) return next();
   
-  try {
-    this.password = await bcrypt.hash(this.password, 12);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+//   try {
+//     this.password = await bcrypt.hash(this.password, 12);
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

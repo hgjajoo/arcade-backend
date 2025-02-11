@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "server.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
+    "build": "echo \"No build step needed for Node.js application.\""
   },
   "keywords": [],
   "author": "",
@@ -26,7 +29,9 @@
     "mongoose": "^8.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.10.0",
-    "nodemon": "^3.1.9",
     "resend": "^4.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

@@ -1,66 +1,7 @@
-// // const User = require("../models/userModel");
-// // const { generateToken } = require("../utils/jwt");
-
-// // exports.login = async (req, res) => {
-// //   try {
-// //     console.log('Login Request Body:', req.body);
-    
-// //     const { email, password } = req.body;
-    
-// //     // Find user by email
-// //     const user = await User.findOne({ email });
-    
-// //     console.log('Found User:', user);
-    
-// //     // Check if user exists
-// //     if (!user) {
-// //       return res.status(404).json({ 
-// //         status: "fail", 
-// //         message: "User not found" 
-// //       });
-// //     }
-    
-// //     // Compare passwords
-// //     const isMatch = await user.comparePassword(password);
-    
-// //     // Check if password matches
-// //     if (!isMatch) {
-// //       return res.status(401).json({ 
-// //         status: "fail", 
-// //         message: "Invalid credentials" 
-// //       });
-// //     }
-    
-// //     // Generate token
-// //     const token = generateToken({ 
-// //       id: user._id, 
-// //       email: user.email 
-// //     });
-
-// //     // Successful login
-// //     res.status(200).json({
-// //       status: "success",
-// //       data: {
-// //         user: {
-// //           fullname: user.fullname,
-// //           email: user.email,
-// //           regNo: user.regNo,
-// //           balance: user.balance,
-// //         },
-// //         token,
-// //       },
-// //     });
-// //   } catch (err) {
-// //     console.error('Login Error:', err);
-// //     res.status(500).json({ 
-// //       status: "fail", 
-// //       message: "Internal server error" 
-// //     });
-// //   }
-// // };
 const User = require("../models/userModel");
 const { generateToken } = require("../utils/jwt");
 const bcrypt = require("bcryptjs");
+const {verifyHashedData} = require("../utils/hashData");
 
 exports.login = async (req, res) => {
   try {
@@ -76,7 +17,7 @@ exports.login = async (req, res) => {
     }
 
     // Find user by email and explicitly select the password field
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email });
     
     console.log('Found User:', user);
     
@@ -88,26 +29,18 @@ exports.login = async (req, res) => {
       });
     }
     
-    // Compare passwords
-    let isMatch;
-    try {
-      isMatch = await bcrypt.compare(password, user.password);
-    } catch (error) {
-      console.error('Password comparison error:', error);
-      return res.status(500).json({
-        status: "error",
-        message: "Error verifying credentials"
-      });
-    }
+    // Use the comparePassword method from the User model
+    const isMatch = await verifyHashedData(password, user.password);
     
-    // Check if password matches
+    // Add this console.log to debug the password comparison
+    console.log('Password match result:', isMatch);
+    
     if (!isMatch) {
       return res.status(401).json({ 
         status: "fail", 
         message: "Invalid email or password" 
       });
     }
-    
     // Generate token
     const token = generateToken({ 
       id: user._id, 
@@ -135,6 +68,58 @@ exports.login = async (req, res) => {
     res.status(500).json({ 
       status: "error", 
       message: "Internal server error" 
+    });
+  }
+};
+
+// Create user 
+exports.createUser = async (req, res) => {
+  try {
+    const { fullname, email, regNo, password } = req.body;
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Email already exists",
+      });
+    }
+    // Hash the password
+    const hashedPassword = await this.hashPassword(password);
+    // Create a new user
+    const newUser = new User({
+      fullname,
+      email,
+      regNo,
+      password: hashedPassword,
+    });
+    // Save the user to the database
+    await newUser.save();
+    // Generate token
+    const token = generateToken({
+      id: newUser._id,
+      email: newUser.email
+    });
+    // Remove password from response
+    const userResponse = {
+      fullname: newUser.fullname,
+      email: newUser.email,
+      regNo: newUser.regNo,
+      balance: newUser.balance,
+    };
+    // Successful registration
+    res.status(201).json({
+      status: "success",
+      data: {
+        user: userResponse,
+        token,
+      },
+    });
+  } catch (err) {
+    console.error('Registration Error:', err);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error",
     });
   }
 };

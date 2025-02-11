@@ -13,18 +13,15 @@ console.log("Payment Controller methods:", {
 // Authentication routes
 router.post("/login", authController.login);
 
+// Registration routes
+router.post("/createUser", authController.createUser);
+
 // Payment routes
-// Only add routes if the controller methods exist
-if (paymentController.getPaymentHistory) {
-    router.get("/payment-history/:regNo", paymentController.getPaymentHistory);
-}
+router.get("/payment-history/:regNo", paymentController.getPaymentHistory);
 
-if (paymentController.addMoney) {
-    router.post("/add-money", paymentController.addMoney);
-}
+router.post("/add-money", paymentController.addMoney);
 
-if (paymentController.spendMoney) {
-    router.post("/spend-money", paymentController.spendMoney);
-}
+router.post("/spend-money", paymentController.spendMoney);
+
 
 module.exports = router;
