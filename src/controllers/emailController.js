@@ -320,18 +320,19 @@ const sendEmail = async (toEmail, password) => {
     };
 
     const htmlTemplate = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #333;">Welcome to FTC Arcade</h2>
-        <p>Hello,</p>
-        <p>Your account has been created successfully. Here are your login credentials:</p>
-        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <p style="margin: 5px 0;"><strong>Email:</strong> ${toEmail}</p>
-            <p style="margin: 5px 0;"><strong>Password:</strong> ${password}</p>
-        </div>
-        <p style="color: #ff0000;">Important: Keep these credentials safe and do not share them with anyone.</p>
-        <hr style="border: 1px solid #eee; margin: 20px 0;">
-        <p style="font-size: 12px; color: #666;">This is an automated message, please do not reply.</p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;">
+    <h2 style="color: #1f2937; text-align: center; margin-bottom: 20px;">Welcome to <span style="color: #3b82f6;">FTC Arcade</span></h2>
+    <p style="color: #4b5563; font-size: 16px;">Hi there,</p>
+    <p style="color: #4b5563; font-size: 16px;">Your account has been successfully created! Below are your login credentials:</p>
+    <div style="background-color: #e5e7eb; padding: 20px; border-radius: 8px; margin: 20px 0; font-size: 16px; color: #1f2937;">
+        <p style="margin: 0 0 10px;"><strong>Email:</strong> ${toEmail}</p>
+        <p style="margin: 0;"><strong>Password:</strong> ${password}</p>
     </div>
+    <p style="color: #d32f2f; font-size: 14px; font-weight: bold; margin: 20px 0;">Important: Please keep these credentials secure and do not share them with anyone.</p>
+    <hr style="border: 1px solid #e5e7eb; margin: 20px 0;">
+    <p style="color: #9ca3af; font-size: 12px; text-align: center;">This is an automated email. Please do not reply to this message.</p>
+</div>
+
 `;
 
     const data = {
