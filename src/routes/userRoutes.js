@@ -1,27 +1,20 @@
 const express = require("express");
 const authController = require("../controllers/authController");
 const paymentController = require("../controllers/paymentController");
-const router = express.Router();
+const { protect } = require("../middleware/jwt");
 
-// First, let's verify what we're importing
-console.log("Payment Controller methods:", {
-    getPaymentHistory: !!paymentController.getPaymentHistory,
-    addMoney: !!paymentController.addMoney,
-    spendMoney: !!paymentController.spendMoney
-});
+const router = express.Router();
 
 // Authentication routes
 router.post("/login", authController.login);
-
-// Registration routes
 router.post("/createUser", authController.createUser);
 
+// Protected profile route
+router.get("/profile", protect, authController.getProfile);
+
 // Payment routes
-router.get("/payment-history/:regNo", paymentController.getPaymentHistory);
-
+router.get("/payment-history/", protect,  paymentController.getPaymentHistory);
 router.post("/add-money", paymentController.addMoney);
-
-router.post("/spend-money", paymentController.spendMoney);
-
+router.post("/spendMoney", protect, paymentController.spendMoney);
 
 module.exports = router;
